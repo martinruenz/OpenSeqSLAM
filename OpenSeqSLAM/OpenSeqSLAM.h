@@ -13,16 +13,10 @@
 //  Copyright (c) 2014 Saburo Okita. All rights reserved.
 //
 
-
-
-#ifndef __OpenSeqSLAM__OpenSeqSLAM__
-#define __OpenSeqSLAM__OpenSeqSLAM__
+#pragma once
 
 #include <iostream>
 #include <opencv2/opencv.hpp>
-
-using namespace std;
-using namespace cv;
 
 class OpenSeqSLAM {
 public:
@@ -30,15 +24,15 @@ public:
     void init( int patch_size, int local_radius, int matching_distance );
     
     
-    Mat preprocess( Mat& image );
-    vector<Mat> preprocess( vector<Mat>& images );
-    Mat calcDifferenceMatrix( vector<Mat>& set_1, vector<Mat>& set_2 );
+    cv::Mat preprocess( cv::Mat& image );
+    std::vector<cv::Mat> preprocess( std::vector<cv::Mat>& images );
+    cv::Mat calcDifferenceMatrix( std::vector<cv::Mat>& set_1, std::vector<cv::Mat>& set_2 );
     
-    Mat enhanceLocalContrast( Mat& diff_matrix, int local_radius = 10 );
-    pair<int, double> findMatch( Mat& diff_mat, int N, int matching_dist );
-    Mat findMatches( Mat& diff_mat, int matching_dist = 10 );
+    cv::Mat enhanceLocalContrast( cv::Mat& diff_matrix, int local_radius = 10 );
+    std::pair<int, double> findMatch( cv::Mat& diff_mat, int N, int matching_dist );
+    cv::Mat findMatches( cv::Mat& diff_mat, int matching_dist = 10 );
     
-    Mat apply( vector<Mat>& set_1, vector<Mat>& set_2 );
+    cv::Mat apply( std::vector<cv::Mat>& set_1, std::vector<cv::Mat>& set_2 );
     
 protected:
     int patchSize;
@@ -47,11 +41,9 @@ protected:
     int RWindow;
     float minVelocity;
     float maxVelocity;
-    Size imageSize;
+    cv::Size imageSize;
     
     double convertToSampleStdDev( double pop_stddev, int N );
-    Mat normalizePatch( Mat& image, int patch_size );
+    cv::Mat normalizePatch( cv::Mat& image, int patch_size );
     
 };
-
-#endif /* defined(__OpenSeqSLAM__OpenSeqSLAM__) */

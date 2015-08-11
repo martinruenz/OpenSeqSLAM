@@ -8,6 +8,8 @@
 
 #include "OpenSeqSLAM.h"
 
+using namespace cv;
+using namespace std;
 
 OpenSeqSLAM::OpenSeqSLAM(){
     patchSize           =  8;
@@ -97,8 +99,11 @@ Mat OpenSeqSLAM::preprocess( Mat& image ) {
  */
 vector<Mat> OpenSeqSLAM::preprocess( vector<Mat>& images ) {
     vector<Mat> result;
-    for( Mat& image: images )
+    //static int test = 0;
+    for( Mat& image: images ){
         result.push_back( preprocess( image ) );
+        //test++;
+    }
     return result;
 }
 
@@ -110,10 +115,9 @@ Mat OpenSeqSLAM::calcDifferenceMatrix( vector<Mat>& set_1, vector<Mat>& set_2 ) 
     int m = static_cast<int>(set_2.size());
     
     Mat diff_mat = Mat::zeros(n, m, CV_32FC1 );
-    Mat mat_1, mat_2;
     
     for( int i = 0; i < n; i++ ) {
-        float * diff_ptr = diff_mat.ptr<float>(i);
+        float* diff_ptr = diff_mat.ptr<float>(i);
         
         /* Difference is between two images is calculated as */
         /* the average sum of absolute difference between them */
@@ -167,7 +171,7 @@ Mat OpenSeqSLAM::enhanceLocalContrast( Mat& diff_matrix, int local_radius ) {
 }
 
 /**
- * Given the difference matrix, and N index, find the image that
+ * Given the difference matrix, and index N, find the image that
  * has a good match within the matching distance from image N
  * This method returns the matching index, and its score
  */
@@ -231,7 +235,7 @@ pair<int, double> OpenSeqSLAM::findMatch( Mat& diff_mat, int N, int matching_dis
     double min_val = score[min_index];
     
     /* ... now discard the RWindow region from where we found the lowest score ... */
-    for( int i = MAX(0, min_index - RWindow / 2); i < MIN( score.size(), min_index + RWindow / 2); i++ )
+    for( int i = MAX(0, min_index - RWindow / 2); i < MIN( int(score.size()), min_index + RWindow / 2); i++ )
         score[i] = std::numeric_limits<double>::max();
     
     /* ... in order to find the second lowest score */
